@@ -50,8 +50,6 @@ public class InterceptFullResponseProxyServer {
                                 System.out.println(httpResponse.content().toString(Charset.defaultCharset()));
                                 //修改响应头和响应体
                                 httpResponse.headers().set("handel", "edit head");
-                    /*int index = ByteUtil.findText(httpResponse.content(), "<head>");
-                    ByteUtil.insertText(httpResponse.content(), index, "<script>alert(1)</script>");*/
                                 httpResponse.content().writeBytes("<script>alert('hello jproxy')</script>".getBytes());
                             }
                         });

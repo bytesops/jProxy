@@ -44,7 +44,7 @@ public class InterceptFullRequestProxyServer {
 
                             @Override
                             public boolean match(HttpRequest httpRequest, HttpProxyInterceptPipeline pipeline) {
-                                //如果是json报文
+                                // 如果是json报文
                                 if (HttpUtil.checkHeader(httpRequest.headers(), HttpHeaderNames.CONTENT_TYPE, "^(?i)application/json.*$")) {
                                     return true;
                                 }
@@ -54,10 +54,10 @@ public class InterceptFullRequestProxyServer {
                             @Override
                             public void handleRequest(FullHttpRequest httpRequest, HttpProxyInterceptPipeline pipeline) {
                                 ByteBuf content = httpRequest.content();
-                                //打印请求信息
+                                // 打印请求信息
                                 System.out.println(httpRequest.toString());
                                 System.out.println(content.toString(Charset.defaultCharset()));
-                                //修改请求体
+                                // 修改请求体
                                 String body = "{\"name\":\"intercept\",\"pwd\":\"123456\"}";
                                 content.clear();
                                 content.writeBytes(body.getBytes());

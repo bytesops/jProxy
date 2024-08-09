@@ -7,6 +7,7 @@ import com.github.bytesops.jproxy.server.HttpProxyServer;
 import com.github.bytesops.jproxy.server.HttpProxyServerConfig;
 import com.github.bytesops.jproxy.server.accept.DomainHttpProxyMitmMatcher;
 import io.netty.channel.Channel;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
 
 import java.util.Arrays;
@@ -30,8 +31,7 @@ public class MimtMatchHttpProxyServer {
                             // 只有请求百度域名这里才会被调用
                             @Override
                             public void beforeRequest(Channel clientChannel, HttpRequest httpRequest, HttpProxyInterceptPipeline pipeline) throws Exception {
-                                System.out.println(httpRequest.toString());
-
+                                System.out.println(httpRequest.headers().get(HttpHeaderNames.HOST));
                                 pipeline.beforeRequest(clientChannel, httpRequest);
                             }
                         });

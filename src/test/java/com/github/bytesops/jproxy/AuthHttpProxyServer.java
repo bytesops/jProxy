@@ -14,6 +14,9 @@ import io.netty.handler.codec.http.*;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 认证
+ */
 public class AuthHttpProxyServer {
 
     // curl -i -x 127.0.0.1:9999 -U admin:123456 https://www.baidu.com

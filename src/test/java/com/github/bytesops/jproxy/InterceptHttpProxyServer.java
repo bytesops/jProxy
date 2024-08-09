@@ -27,10 +27,10 @@ public class InterceptHttpProxyServer {
                             @Override
                             public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
                                                       HttpProxyInterceptPipeline pipeline) throws Exception {
-                                //替换UA，伪装成手机浏览器
+                                // 替换UA，伪装成手机浏览器
                 /*httpRequest.headers().set(HttpHeaderNames.USER_AGENT,
                     "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1");*/
-                                //转到下一个拦截器处理
+                                // 转到下一个拦截器处理
                                 pipeline.beforeRequest(clientChannel, httpRequest);
                             }
 
@@ -38,9 +38,9 @@ public class InterceptHttpProxyServer {
                             public void afterResponse(Channel clientChannel, Channel proxyChannel,
                                                       HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) throws Exception {
 
-                                //拦截响应，添加一个响应头
+                                // 拦截响应，添加一个响应头
                                 httpResponse.headers().add("intercept", "test");
-                                //转到下一个拦截器处理
+                                // 转到下一个拦截器处理
                                 pipeline.afterResponse(clientChannel, proxyChannel, httpResponse);
                             }
                         });

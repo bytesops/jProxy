@@ -11,9 +11,7 @@ import io.netty.channel.Channel;
 import io.netty.handler.codec.http.*;
 
 /**
- * @Author: LiWei
- * @Description 匹配到百度首页时重定向到指定url
- * @Date: 2019/3/4 16:23
+ * 匹配到百度首页时重定向到指定url
  */
 public class InterceptRedirectHttpProxyServer {
     public static void main(String[] args) throws Exception {

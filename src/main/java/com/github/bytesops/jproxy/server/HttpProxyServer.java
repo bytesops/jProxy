@@ -76,14 +76,14 @@ public class HttpProxyServer {
                     caCert = caCertFactory.getCACert();
                     caPriKey = caCertFactory.getCAPriKey();
                 }
-                //读取CA证书使用者信息
+                // 读取CA证书使用者信息
                 serverConfig.setIssuer(CertUtil.getSubject(caCert));
-                //读取CA证书有效时段(server证书有效期超出CA证书的，在手机上会提示证书不安全)
+                // 读取CA证书有效时段(server证书有效期超出CA证书的，在手机上会提示证书不安全)
                 serverConfig.setCaNotBefore(caCert.getNotBefore());
                 serverConfig.setCaNotAfter(caCert.getNotAfter());
-                //CA私钥用于给动态生成的网站SSL证书签证
+                // CA私钥用于给动态生成的网站SSL证书签证
                 serverConfig.setCaPriKey(caPriKey);
-                //生产一对随机公私钥用于网站SSL证书动态创建
+                // 生产一对随机公私钥用于网站SSL证书动态创建
                 KeyPair keyPair = CertUtil.genKeyPair();
                 serverConfig.setServerPriKey(keyPair.getPrivate());
                 serverConfig.setServerPubKey(keyPair.getPublic());

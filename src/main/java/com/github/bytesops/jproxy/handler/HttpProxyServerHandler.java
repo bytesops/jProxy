@@ -176,14 +176,12 @@ public class HttpProxyServerHandler extends ChannelInboundHandlerAdapter {
                     HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpProxyServer.SUCCESS);
                     ctx.writeAndFlush(response);
                     ctx.channel().pipeline().remove("httpCodec");
-                    // fix issue #42
                     ReferenceCountUtil.release(msg);
                     return;
                 }
             }
             setInterceptPipeline(buildPipeline());
             getInterceptPipeline().setRequestProto(getRequestProto().copy());
-            // fix issue #27
             if (request.uri().indexOf("/") != 0) {
                 URL url = new URL(request.uri());
                 request.setUri(url.getFile());

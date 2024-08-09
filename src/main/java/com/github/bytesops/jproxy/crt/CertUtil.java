@@ -1,6 +1,9 @@
 package com.github.bytesops.jproxy.crt;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -16,7 +19,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -216,33 +218,4 @@ public class CertUtil {
         return CertUtilsLoader.getCurrentSelectionGenerator();
     }
 
-    public static void main(String[] args) throws Exception {
-        //生成ca证书和私钥
-        KeyPair keyPair = CertUtil.genKeyPair();
-        File caCertFile = new File("./ca.crt");
-        if (caCertFile.exists()) {
-            caCertFile.delete();
-        }
-        // C: Contry Name(2 letter): CN
-        // ST: State or Province Name(full name): JiangSu
-        // L: Locality Name(city): SuZhou
-        // O: Organization Name(company): byteops
-        // OU: Organization Unit Name(section): tools
-        // CN: Common Name(name): jProxy
-        Files.write(Paths.get(caCertFile.toURI()),
-                CertUtil.genCACert(
-                        "C=CN, ST=JiangSu, L=SuZhou, O=bytesops, OU=tools, CN=jProxy",
-                        new Date(),
-                        new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365)),
-                        keyPair)
-                        .getEncoded());
-
-        File caPriKeyFile = new File("./ca_private.der");
-        if (caPriKeyFile.exists()) {
-            caPriKeyFile.delete();
-        }
-
-        Files.write(caPriKeyFile.toPath(),
-                new PKCS8EncodedKeySpec(keyPair.getPrivate().getEncoded()).getEncoded());
-    }
 }

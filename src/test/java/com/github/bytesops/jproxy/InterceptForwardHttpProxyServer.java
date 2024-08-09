@@ -31,7 +31,7 @@ public class InterceptForwardHttpProxyServer {
                             @Override
                             public void beforeRequest(Channel clientChannel, HttpRequest httpRequest,
                                                       HttpProxyInterceptPipeline pipeline) throws Exception {
-                                //匹配到百度的请求转发到淘宝
+                                // 匹配到百度的请求转发到淘宝
                                 if (HttpUtil.checkUrl(httpRequest, "^www.baidu.com$")) {
                                     pipeline.getRequestProto().setHost("www.taobao.com");
                                     pipeline.getRequestProto().setPort(443);

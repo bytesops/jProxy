@@ -17,40 +17,51 @@ new HttpProxyServer().start(9999);
 以一个中间人攻击演示，在访问百度首页时修改响应头和响应报文
 
 ```java
-HttpProxyServerConfig config =  new HttpProxyServerConfig();
-// 开启HTTPS支持
-// 不开启的话HTTPS不会被拦截，而是直接转发原始报文
+HttpProxyServerConfig config = new HttpProxyServerConfig();
 config.setHandleSsl(true);
 new HttpProxyServer()
-    .serverConfig(config)
-    .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
-      @Override
-      public void init(HttpProxyInterceptPipeline pipeline) {
-        pipeline.addLast(new FullResponseIntercept() {
+        .serverConfig(config)
+        .proxyInterceptInitializer(new HttpProxyInterceptInitializer() {
+            @Override
+            public void init(HttpProxyInterceptPipeline pipeline) {
+                pipeline.addLast(new FullResponseIntercept() {
 
-          @Override
-          public boolean match(HttpRequest httpRequest, HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) {
-            // 在匹配到百度首页时插入js
-            return HttpUtil.checkUrl(pipeline.getHttpRequest(), "^www.baidu.com$")
-                && isHtml(httpRequest, httpResponse);
-          }
+                    @Override
+                    public boolean match(HttpRequest httpRequest, HttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) {
+                        // 在匹配到百度首页时插入js
+                        return HttpUtil.checkUrl(pipeline.getHttpRequest(), "^www.baidu.com$")
+                                && HttpUtil.isHtml(httpRequest, httpResponse);
+                    }
 
-          @Override
-          public void handleResponse(HttpRequest httpRequest, FullHttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) {
-            // 打印原始响应信息
-            System.out.println(httpResponse.toString());
-            System.out.println(httpResponse.content().toString(Charset.defaultCharset()));
-            // 修改响应头和响应体
-            httpResponse.headers().set("handle", "edit head");
-            httpResponse.content().writeBytes("<script>alert('hello jproxy')</script>".getBytes());
-          }
-        });
-      }
-    })
-    .start(9999);
+                    @Override
+                    public void handleResponse(HttpRequest httpRequest, FullHttpResponse httpResponse, HttpProxyInterceptPipeline pipeline) {
+                        // 打印匹配到的 host
+                        String host = httpRequest.headers().get(HttpHeaderNames.HOST);
+                        System.out.println(host);
+                        // 修改响应头和响应体
+                        httpResponse.headers().set("handle", "edit head");
+                        httpResponse.content().writeBytes("<script>alert('hello jproxy')</script>".getBytes());
+                    }
+                });
+            }
+        })
+        .start(9999);
 ```
 
-> 注：当开启了 https 支持时，需要安装 CA 证书(`src/resources/ca.crt`)至受信任的根证书颁发机构。
+双击 `ca.crt` 可以安装证书
+
+![](https://oosnail.oss-cn-hangzhou.aliyuncs.com/2024/08/09/14/HNs8e2.png)
+
+![](https://oosnail.oss-cn-hangzhou.aliyuncs.com/2024/08/09/14/PzKRSS.png)
+
+![](https://oosnail.oss-cn-hangzhou.aliyuncs.com/2024/08/09/14/teyQjf.png)
+
+![](https://oosnail.oss-cn-hangzhou.aliyuncs.com/2024/08/09/14/GSxAG7.png)
+
+![](https://oosnail.oss-cn-hangzhou.aliyuncs.com/2024/08/09/14/S2z7WJ.png)
+
+> 注：当开启了 https 支持时，需要安装 CA 证书(`src/resources/ca.crt`)至受信任的根证书颁发机构。  
+> 安装完成后，需要重启电脑
 
 ## HTTPS 支持
 
@@ -83,7 +94,7 @@ openssl req -sha256 -new -x509 -days 365 -key ca.key -out ca.crt \
     -subj "/C=CN/ST=GD/L=SZ/O=byteops/OU=study/CN=jProxyRoot"
 ```
 
-生成完之后把 `ca.crt` 和 `ca_private.der` 复制到项目的 `src/resources/` 中，或者实现 `HttpProxyCACertFactory` 接口来自定义加载根证书和私钥
+生成完之后把 `ca.crt` 和 `ca_private.der` 复制到项目的 `src/resources/` 中.
 
 ### 按规则启用MITM
 
